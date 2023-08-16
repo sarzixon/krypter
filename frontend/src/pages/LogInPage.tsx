@@ -84,7 +84,7 @@ export const LogInPage = () => {
 
 	return (
 		<Wrapper>
-			<StyledBox>
+			<StyledBox component={"form"} onSubmit={handleSubmit(onSubmit)}>
 				<StyledHeader>Welcome</StyledHeader>
 				<StyledIcon />
 				<Controller
@@ -118,7 +118,7 @@ export const LogInPage = () => {
 					/>
 					}
 				/>
-				<StyledButton onClick={handleSubmit(onSubmit)}>Log in</StyledButton>
+				<StyledButton type={"submit"}>Log in</StyledButton>
 				<Typography variant={"subtitle1"} css={css({
 					textAlign: 'center',
 					color:  theme.palette.text.disabled
