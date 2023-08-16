@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import React, {useState} from "react";
 
 
 const Wrapper = styled(Container)`
@@ -51,15 +52,101 @@ const StyledButton = styled(Button)`
 
 export const LogInPage = () => {
 	const theme = useTheme();
+	const [formData, setFormData] = useState({
+		login: {
+			value: '',
+			error: false,
+		},
+		pwd: {
+			value: '',
+			error: false
+		},
+	})
+
+	const validateInputs = (): boolean => {
+		if (formData.login.value.length < 1) {
+			setFormData(prevState => {
+				const res = {...prevState};
+				res.login.error = true
+				return res;
+			})
+
+		}
+
+		if (formData.pwd.value.length < 1) {
+			setFormData(prevState => {
+				const res = {...prevState};
+				res.pwd.error = true
+				return res;
+			})
+		}
+
+		//find inputs with error == true
+		return ( !(formData.login.error || formData.pwd.error) );
+
+	}
+	const handleLoginSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+
+		if( validateInputs() ) {
+			fetch('http://localhost:8000/login', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					login: formData.login.value,
+					pwd: formData.pwd.value
+				})
+			})
+				.then(res => res.text())
+				.then(body => console.log(body))
+				.catch(err => console.log(err) )
+		}
+	}
 
 	return (
 		<Wrapper>
 			<StyledBox>
 				<StyledHeader>Welcome</StyledHeader>
 				<StyledIcon />
-				<TextField variant="standard" label={"login"} css={css({marginBottom: "1rem"})}/>
-				<TextField variant="standard" label={"password"} css={css({marginBottom: "1rem"})}/>
-				<StyledButton>Log in</StyledButton>
+				<TextField
+					error={formData.login.error ?? true}
+					variant="standard"
+					label={"login"}
+					css={css({marginBottom: "1rem"})}
+					value={formData.login.value}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prevState => {
+						const res = {...prevState};
+						res.login.value = e.target.value;
+						return res;
+					})}
+					onFocus={e => setFormData(prevState => {
+						const res = {...prevState};
+						res.login.error = false;
+						return res;
+					})}
+				/>
+				<TextField
+					error={formData.pwd.error ?? true}
+					variant="standard"
+					type="password"
+					label={"password"}
+					css={css({marginBottom: "1rem"})}
+					value={formData.pwd.value}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prevState => {
+						const res = {...prevState};
+						res.pwd.value = e.target.value;
+						return res;
+					})}
+					onFocus={e => setFormData(prevState => {
+						const res = {...prevState};
+						res.pwd.error = false;
+						return res;
+					})}
+				/>
+				<StyledButton onClick={handleLoginSubmit}>Log in</StyledButton>
 				<Typography variant={"subtitle1"} css={css({
 					textAlign: 'center',
 					color:  theme.palette.text.disabled

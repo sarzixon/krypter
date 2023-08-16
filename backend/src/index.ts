@@ -5,6 +5,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 // @ts-ignore
 import { PrismaClient } from '@prisma/client';
+import {setupRoutes} from "./routes";
 
 const prisma = new PrismaClient()
 
@@ -19,23 +20,10 @@ app.use(morgan('dev'));
 
 async function main () {
 
-    // const user = await prisma.user.create({
-    //     data: {
-    //         name: 'Alice',
-    //         email: 'alice@prisma.io',
-    //     },
-    // })
-    // console.log(user)
-
-    const users = await prisma.user.findMany()
-    console.log(users)
-
     // Routes
-    app.get('/', (req, res) => {
-        res.send('Welcome to the Trading Platform API!');
-    });
+    setupRoutes(app);
 
-// Start the server
+    // Start the server
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
