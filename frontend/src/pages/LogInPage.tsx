@@ -3,8 +3,9 @@ import styled from "@emotion/styled";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, {useState} from "react";
-
+import React from "react";
+import axios from "axios";
+import { useForm, Controller, SubmitHandler } from "react-hook-form"
 
 const Wrapper = styled(Container)`
       height: 100vh;
@@ -50,59 +51,34 @@ const StyledButton = styled(Button)`
      border-radius: ${({theme}) => theme.shape.borderRadius}px;
   `;
 
+type LogInInputs = {
+	mail: string,
+	password: string
+}
+
 export const LogInPage = () => {
 	const theme = useTheme();
-	const [formData, setFormData] = useState({
-		login: {
-			value: '',
-			error: false,
-		},
-		pwd: {
-			value: '',
-			error: false
-		},
-	})
 
-	const validateInputs = (): boolean => {
-		if (formData.login.value.length < 1) {
-			setFormData(prevState => {
-				const res = {...prevState};
-				res.login.error = true
-				return res;
-			})
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<LogInInputs>( {defaultValues: {
+			mail: '',
+			password: ''
+		}})
 
-		}
+	const onSubmit: SubmitHandler<LogInInputs> = async (data) => {
+		try {
+			const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/login', {
+				email: data.mail,
+				pwd: data.password
+			});
 
-		if (formData.pwd.value.length < 1) {
-			setFormData(prevState => {
-				const res = {...prevState};
-				res.pwd.error = true
-				return res;
-			})
-		}
+			console.log(data)
 
-		//find inputs with error == true
-		return ( !(formData.login.error || formData.pwd.error) );
-
-	}
-	const handleLoginSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-
-		if( validateInputs() ) {
-			fetch('http://localhost:8000/login', {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					login: formData.login.value,
-					pwd: formData.pwd.value
-				})
-			})
-				.then(res => res.text())
-				.then(body => console.log(body))
-				.catch(err => console.log(err) )
+		} catch (e) {
+			console.log(e)
 		}
 	}
 
@@ -111,48 +87,51 @@ export const LogInPage = () => {
 			<StyledBox>
 				<StyledHeader>Welcome</StyledHeader>
 				<StyledIcon />
-				<TextField
-					error={formData.login.error ?? true}
-					variant="standard"
-					label={"login"}
-					css={css({marginBottom: "1rem"})}
-					value={formData.login.value}
-					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prevState => {
-						const res = {...prevState};
-						res.login.value = e.target.value;
-						return res;
-					})}
-					onFocus={e => setFormData(prevState => {
-						const res = {...prevState};
-						res.login.error = false;
-						return res;
-					})}
+				<Controller
+					name="mail"
+					control={control}
+					rules={{
+						required: true,
+						pattern: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/i
+					}}
+					render={({field}) => <TextField
+												error={errors.mail && true}
+												variant="standard"
+												type="email"
+												label="email"
+												css={css({marginBottom: "1rem"})}
+												{...field}
+												/>
+							}
 				/>
-				<TextField
-					error={formData.pwd.error ?? true}
-					variant="standard"
-					type="password"
-					label={"password"}
-					css={css({marginBottom: "1rem"})}
-					value={formData.pwd.value}
-					onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prevState => {
-						const res = {...prevState};
-						res.pwd.value = e.target.value;
-						return res;
-					})}
-					onFocus={e => setFormData(prevState => {
-						const res = {...prevState};
-						res.pwd.error = false;
-						return res;
-					})}
+				<Controller
+					name="password"
+					control={control}
+					rules={{required: true}}
+					render={({field}) => <TextField
+						error={errors.password && true}
+						variant="standard"
+						type="password"
+						label="password"
+						css={css({marginBottom: "1rem"})}
+						{...field}
+					/>
+					}
 				/>
-				<StyledButton onClick={handleLoginSubmit}>Log in</StyledButton>
+				<StyledButton onClick={handleSubmit(onSubmit)}>Log in</StyledButton>
 				<Typography variant={"subtitle1"} css={css({
 					textAlign: 'center',
 					color:  theme.palette.text.disabled
 				})}>or</Typography>
 				<Divider />
-				<StyledButton>Register</StyledButton>
+				<Typography
+					variant={"subtitle1"}
+					component="a"
+					alignSelf={"center"}
+					css={css({
+						marginTop: "1rem"
+					})}
+				>Register</Typography>
 			</StyledBox>
 		</Wrapper>
 	)
