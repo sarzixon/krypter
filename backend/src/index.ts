@@ -1,15 +1,15 @@
 import 'reflect-metadata';
-import express from 'express';
+import express, {Express} from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 // @ts-ignore
 import { PrismaClient } from '@prisma/client';
-import {setupRoutes} from "./routes";
+import {AuthRouter} from "./routers/AuthRouter";
 
 const prisma = new PrismaClient()
 
-const app = express();
+const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -21,7 +21,8 @@ app.use(morgan('dev'));
 async function main () {
 
     // Routes
-    setupRoutes(app);
+    app.get('/', (req, res) => res.send('basic stuff bro'))
+    app.use('/auth', AuthRouter);
 
     // Start the server
     app.listen(PORT, () => {
