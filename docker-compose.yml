@@ -5,6 +5,15 @@ services:
       context: ./backend
     ports:
       - "8000:8000"  # Adjust the port if needed
+    x-develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /usr/src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
 
   frontend:
     build:
@@ -12,6 +21,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:80"  # Adjust the port if needed
+      - "5173:5173"  # dev
 
   postgres:
     image: postgres:latest

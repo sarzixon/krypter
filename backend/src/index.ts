@@ -8,9 +8,6 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient()
 
-
-
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -19,13 +16,23 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-// Database Connection
 
 async function main () {
 
+    // const user = await prisma.user.create({
+    //     data: {
+    //         name: 'Alice',
+    //         email: 'alice@prisma.io',
+    //     },
+    // })
+    // console.log(user)
+
+    const users = await prisma.user.findMany()
+    console.log(users)
+
     // Routes
     app.get('/', (req, res) => {
-        res.send('Welcome to the Crypto Trading Platform API!');
+        res.send('Welcome to the Trading Platform API!');
     });
 
 // Start the server
