@@ -3,11 +3,9 @@ import express, {Express} from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
-// @ts-ignore
-import { PrismaClient } from '@prisma/client';
 import {AuthRouter} from "./routers/AuthRouter";
 
-const prisma = new PrismaClient()
+import {prisma} from "./prisma";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;

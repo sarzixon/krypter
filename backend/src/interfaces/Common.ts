@@ -8,3 +8,8 @@ export interface TypedResponse<ResBody> extends Express.Response {
     send: Send<ResBody,this>;
     status: Send<Number, this>;
 }
+
+export enum PasswordConf {
+    MIN_LENGTH = 8,
+
+}
