@@ -1,28 +1,26 @@
 import {Divider, Link, Typography, useTheme} from "@mui/material";
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, {useState} from "react";
+import React from "react";
 import {StyledBox, StyledHeader, StyledIcon, Wrapper} from "./styles";
 import {LogIn} from "../../components/forms/LogIn";
 import {Register} from "../../components/forms/Register";
+import {Link as RouterLink, useMatch} from "react-router-dom";
 
 
 
 export const AuthPage = () => {
 	const theme = useTheme();
-	const [isLogin, setIsLogin] = useState(true)
+	//@ts-ignore
+	const isRegister = Boolean( useMatch('/auth/register') );
 
-	const handleFormChange = (e:React.MouseEvent<HTMLAnchorElement>) => {
-		e.preventDefault();
-		setIsLogin(!isLogin);
-	}
 
 	return (
 		<Wrapper>
 			<StyledBox>
 				<StyledHeader>Welcome</StyledHeader>
 				<StyledIcon />
-				{isLogin ? <LogIn /> : <Register />}
+				{isRegister ? <Register /> : <LogIn />}
 				<Typography variant={"subtitle1"} css={css({
 					textAlign: 'center',
 					color:  theme.palette.text.disabled
@@ -30,13 +28,13 @@ export const AuthPage = () => {
 				<Divider />
 				<Link
 					variant={"subtitle1"}
-					component="a"
+					component={RouterLink}
 					alignSelf={"center"}
 					css={css({
 						marginTop: "1rem"
 					})}
-					onClick={handleFormChange}
-				>{isLogin ? "Log in" : "Register"}</Link>
+					to={isRegister ? "/auth/login" : "/auth/register"}
+				>{isRegister ? "Log in" : "Register"}</Link>
 			</StyledBox>
 		</Wrapper>
 	)
