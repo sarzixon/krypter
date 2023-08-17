@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {PasswordConf} from "../../interfaces/Common";
 import {prisma} from "../../prisma";
-
+const crypto = require('crypto');
 export function Login(req: Request, res: Response) {
     //validate request data
     console.log(req.body)
@@ -23,25 +23,30 @@ export async function Register(req: Request<RegisterRequest>, res: Response) {
     ) {
         const { email, password, policy } = req.body;
 
-        const exists = prisma.user.findUnique({where: {
+        const exists = await prisma.user.findUnique({where: {
             email: email
             }})
 
         if (exists == null) {
 
             try {
+                const salt = crypto.randomBytes(10).toString('hex');
+                const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+
                 const newUser = await prisma.user.create({
                     data: {
                         email,
-                        password,
+                        password: hash,
+                        salt,
                         policy,
                         created_at: new Date(),
                         last_login: new Date()
                     }
                 });
 
-                console.log(newUser);
                 res.status(201).json(newUser);
+                return;
+
             } catch (e) {
                 //@ts-ignore
                 res.status(500).json({message: "error while creating new user. Please try again later."});

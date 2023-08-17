@@ -15,6 +15,7 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   password String
+  salt String
   policy Boolean
   created_at DateTime
   last_login DateTime
