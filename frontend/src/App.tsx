@@ -1,10 +1,10 @@
-import {LogInPage} from "./pages/LogInPage";
+import {AuthPage} from "./pages/AuthPage/AuthPage";
 function App() {
 
 
 
   return (
-      <LogInPage />
+      <AuthPage />
   )
 }
 
