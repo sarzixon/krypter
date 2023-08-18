@@ -6,6 +6,7 @@ import React, {useState} from "react";
 import axios from "axios";
 import {css} from "@emotion/react";
 import styled from "@emotion/styled";
+import {useNavigate} from "react-router-dom";
 
 
 const StyledForm = styled(Box)`
@@ -22,6 +23,7 @@ type RegisterInputs = {
 export const Register = () => {
 
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const {
         control,
@@ -33,7 +35,7 @@ export const Register = () => {
             password: '',
             confirmPassword: '',
             policy: false
-        }})
+        }});
     const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
         try {
             const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/register', {
@@ -41,9 +43,11 @@ export const Register = () => {
                 password: data.password,
                 policy: data.policy
             });
-            console.log(res)
 
-            console.log(res.data.message)
+            //after successful registration save jwt token and redirect to dashboard
+
+            // navigate('/dashboard');
+            
 
         } catch (e) {
             setError(e.response.data.message)

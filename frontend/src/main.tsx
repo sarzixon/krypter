@@ -10,9 +10,11 @@ import {theme} from "./themes/PrimaryTheme";
 import {ThemeProvider} from "@mui/material";
 import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
 import {AuthPage} from "./pages/AuthPage/AuthPage";
+import {Dashboard} from "./pages/Dashboard/Dashboard";
+import {DevSupport} from "@react-buddy/ide-toolbox";
+import {ComponentPreviews, useInitial} from "./dev";
 
 console.log(theme)
-
 
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -22,20 +24,20 @@ const router = createBrowserRouter(createRoutesFromElements(
             path="/"
         />
         <Route
-            element={ <AuthPage /> }
+            element={<AuthPage/>}
             path="/auth"
         >
             <Route
-                element={ <AuthPage /> }
+                element={<AuthPage/>}
                 path="login"
             />
             <Route
-                element={ <AuthPage /> }
+                element={<AuthPage/>}
                 path="register"
             />
         </Route>
         <Route
-            element={<div>dashboard</div>}
+            element={<Dashboard/>}
             path="/dashboard"
         >
 
@@ -45,9 +47,13 @@ const router = createBrowserRouter(createRoutesFromElements(
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-      <ThemeProvider theme={theme}>
-          <RouterProvider router={router} />
-      </ThemeProvider>
-  </React.StrictMode>,
+    <React.StrictMode>
+        <ThemeProvider theme={theme}>
+            <DevSupport ComponentPreviews={ComponentPreviews}
+                        useInitialHook={useInitial}
+            >
+                <RouterProvider router={router}/>
+            </DevSupport>
+        </ThemeProvider>
+    </React.StrictMode>,
 )

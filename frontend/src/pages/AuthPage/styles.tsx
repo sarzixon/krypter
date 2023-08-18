@@ -9,12 +9,10 @@ export const Wrapper = styled(Container)`
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: ${({theme}) => theme.palette.secondary.main};
     `;
 
 export const StyledBox = styled(Box)`
     background: ${({theme}) => theme.palette.background.default};
-    box-shadow: 0px 11px 32px -5px rgba(66, 68, 90, 0.8);
     display: flex;
     flex-direction: column;
     padding: 6rem 8rem;

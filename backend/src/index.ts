@@ -13,7 +13,11 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: true, //'http://localhost:5137',
+    exposedHeaders: ["set-cookie"]
+}));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET || '03259f2125d922b4724075d7eab22253'));
 app.use(morgan('dev'));

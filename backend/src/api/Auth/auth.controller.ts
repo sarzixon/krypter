@@ -57,16 +57,17 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
 
     res.status(200)
         .cookie("accessToken", accessToken, {
-        httpOnly: true,
         maxAge: Number(process.env.JWT_ACCESS_EXIPRES) || 1000 * 60 * 60 * 24,
-            secure: true,
-        signed: true
-    }).cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        // signed: true,
+        sameSite: "none"
+    })/*.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         maxAge: Number(process.env.JWT_REFRESH_EXIPRES) || 1000 * 60 * 60 * 24 * 7,
         secure: true,
         signed: true
-    }).send('logged in!').end()
+    })*/.json({uid: user.uid});
 }
 
 interface RegisterRequest {

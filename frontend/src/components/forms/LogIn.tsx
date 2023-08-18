@@ -6,7 +6,7 @@ import React from "react";
 import axios from "axios";
 import {css} from "@emotion/react";
 import styled from "@emotion/styled";
-
+import {useNavigate} from "react-router-dom";
 
 const StyledForm = styled(Box)`
   display: flex;
@@ -14,27 +14,32 @@ const StyledForm = styled(Box)`
 `;
 
 type LogInInputs = {
-    mail: string,
+    email: string,
     password: string
 }
 export const LogIn = () => {
+    const navigate = useNavigate();
 
     const {
         control,
         handleSubmit,
         formState: { errors },
     } = useForm<LogInInputs>( {defaultValues: {
-            mail: '',
+            email: '',
             password: ''
         }})
     const onSubmit: SubmitHandler<LogInInputs> = async (data) => {
         try {
             const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/login', {
-                email: data.mail,
+                email: data.email,
                 password: data.password
+            }, {
+                withCredentials: true,
+
             });
 
-            console.log(data)
+            localStorage.setItem('uid', res.data.uid )
+            // navigate('/dashboard')
 
         } catch (e) {
             console.log(e)
@@ -44,14 +49,14 @@ export const LogIn = () => {
     return (
         <StyledForm component={"form"} onSubmit={handleSubmit(onSubmit)}>
             <Controller
-                name="mail"
+                name="email"
                 control={control}
                 rules={{
                     required: true,
                     pattern: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/i
                 }}
                 render={({field}) => <TextField
-                    error={errors.mail && true}
+                    error={errors.email && true}
                     variant="standard"
                     type="email"
                     label="email"

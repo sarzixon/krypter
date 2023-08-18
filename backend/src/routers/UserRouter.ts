@@ -8,7 +8,7 @@ UserRouter.use((req, res, next) => {
 })
 
 UserRouter.get('/:id/assets',  (req, res) => {
-    console.log()
+    console.log(req.params)
 
     console.log(req.cookies)
     console.log(req.signedCookies)
