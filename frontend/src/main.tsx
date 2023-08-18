@@ -34,6 +34,12 @@ const router = createBrowserRouter(createRoutesFromElements(
                 path="register"
             />
         </Route>
+        <Route
+            element={<div>dashboard</div>}
+            path="/dashboard"
+        >
+
+        </Route>
     </>
 ));
 
