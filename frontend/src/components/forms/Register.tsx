@@ -2,11 +2,12 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
 /** @jsxImportSource @emotion/react */
 import { Button } from "../../components/buttons/Button";
-import { useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
+import axios, { AxiosError } from "axios";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
+import { ShowErrorProps } from "../../types/types";
 
 
 const StyledForm = styled(Box)`
@@ -20,16 +21,19 @@ type RegisterInputs = {
     confirmPassword: string,
     policy: boolean
 }
-export const Register = () => {
 
-    const [error, setError] = useState('');
+type RegisterProps = ShowErrorProps;
+
+export const Register = ({ showError }: RegisterProps) => {
+
     const navigate = useNavigate();
 
     const {
         control,
         handleSubmit,
         getValues,
-        formState: { errors },
+        reset,
+        formState: { errors, isDirty, isSubmitting },
     } = useForm<RegisterInputs>({
         defaultValues: {
             email: '',
@@ -38,8 +42,21 @@ export const Register = () => {
             policy: false
         }
     });
+
+    useEffect(() => {
+        if (isDirty) {
+            showError(prev => {
+                return {
+                    ...prev,
+                    show: false
+                }
+            })
+        }
+    }, [isDirty]);
+
     const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
         try {
+
             const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/register', {
                 email: data.email,
                 password: data.password,
@@ -49,8 +66,17 @@ export const Register = () => {
             navigate('/dashboard');
 
 
-        } catch (e) {
-            setError(e.response.data.message)
+        } catch (e: unknown) {
+            reset();
+            const error = e as AxiosError<{ message: string }>;
+
+            showError(() => {
+
+                return {
+                    show: true,
+                    message: error.response?.data.message || 'Invalid data'
+                }
+            })
         }
     }
 
@@ -118,8 +144,7 @@ export const Register = () => {
                 />
                 }
             />
-            <Button type={"submit"}>Register</Button>
-            {error ?? error}
+            <Button disabled={isSubmitting} type={"submit"}>Register</Button>
         </StyledForm>
     );
 };

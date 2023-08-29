@@ -13,7 +13,9 @@ import { AuthPage } from "./pages/AuthPage/AuthPage";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { DevSupport } from "@react-buddy/ide-toolbox";
 import { ComponentPreviews, useInitial } from "./dev";
+import axios from 'axios';
 
+axios.defaults.withCredentials = true;
 
 const router = createBrowserRouter(createRoutesFromElements(
     <>
@@ -42,7 +44,6 @@ const router = createBrowserRouter(createRoutesFromElements(
         </Route>
     </>
 ));
-
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

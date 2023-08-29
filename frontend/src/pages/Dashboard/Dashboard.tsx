@@ -6,8 +6,11 @@ export const Dashboard = () => {
 	const navigate = useNavigate();
 
 	function handleLogout() {
-		axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`).then(() => {
+		axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`, null, {
+			withCredentials: true
+		}).then((res) => {
 			navigate('/auth/login')
+
 
 		}).catch((err) => {
 			console.log("Error while Logging out");

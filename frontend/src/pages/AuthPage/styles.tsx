@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
@@ -12,6 +12,7 @@ export const Wrapper = styled(Container)`
     `;
 
 export const StyledBox = styled(Box)`
+    position: relative;
     background: ${({ theme }) => theme.palette.background.default};
     display: flex;
     flex-direction: column;

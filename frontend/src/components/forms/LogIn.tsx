@@ -1,11 +1,12 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Box, TextField } from "@mui/material";
-/** @jsxImportSource @emotion/react */
 import { Button } from "../../components/buttons/Button";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
+import { ShowErrorProps } from "../../types/types";
+import { useEffect } from "react";
 
 const StyledForm = styled(Box)`
   display: flex;
@@ -16,19 +17,35 @@ type LogInInputs = {
     email: string,
     password: string
 }
-export const LogIn = () => {
+
+type LogInProps = ShowErrorProps
+
+export const LogIn = ({ showError }: LogInProps) => {
     const navigate = useNavigate();
 
     const {
         control,
         handleSubmit,
-        formState: { errors },
+        reset,
+        formState: { errors, isDirty, isSubmitting },
     } = useForm<LogInInputs>({
         defaultValues: {
             email: '',
             password: ''
         }
     })
+
+    useEffect(() => {
+        if (isDirty) {
+            showError(prev => {
+                return {
+                    ...prev,
+                    show: false
+                }
+            })
+        }
+    }, [isDirty]);
+
     const onSubmit: SubmitHandler<LogInInputs> = async (data) => {
         try {
             const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/login', {
@@ -39,11 +56,20 @@ export const LogIn = () => {
 
             });
 
-            localStorage.setItem('uid', res.data.uid)
             navigate('/dashboard')
 
-        } catch (e) {
-            console.log(e)
+        } catch (e: unknown) {
+            reset();
+
+            const error = e as AxiosError<{ message: string }>;
+
+            showError(() => {
+
+                return {
+                    show: true,
+                    message: error.response?.data.message || 'Invalid credentials'
+                }
+            })
         }
     }
 
@@ -80,7 +106,7 @@ export const LogIn = () => {
                 />
                 }
             />
-            <Button type={"submit"}>Log in</Button>
+            <Button disabled={isSubmitting} type={"submit"}>Log in</Button>
         </StyledForm>
     );
 };

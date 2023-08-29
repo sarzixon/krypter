@@ -1,25 +1,45 @@
-import { Divider, Link, Typography, useTheme } from "@mui/material";
+import { Alert, Divider, Link, Typography, useTheme } from "@mui/material";
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { StyledBox, StyledHeader, StyledIcon, Wrapper } from "./styles";
 import { LogIn } from "../../components/forms/LogIn";
 import { Register } from "../../components/forms/Register";
-import { Link as RouterLink, useMatch } from "react-router-dom";
+import { Link as RouterLink, useLocation, useMatch } from "react-router-dom";
+import { useEffect, useState } from "react";
+import styled from "@emotion/styled";
 
-
+const StyledAlert = styled(Alert)`
+	width: 90%;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	bottom: 20px;
+`;
 
 export const AuthPage = () => {
 	const theme = useTheme();
-	//@ts-ignore
+	const location = useLocation();
 	const isRegister = Boolean(useMatch('/auth/register'));
+	const [alertState, setAlertState] = useState({
+		show: false,
+		message: ''
+	});
 
+	useEffect(() => {
+		setAlertState(prev => {
+			return {
+				...prev,
+				show: false
+			}
+		})
+	}, [location]);
 
 	return (
 		<Wrapper>
 			<StyledBox>
 				<StyledHeader>Welcome</StyledHeader>
 				<StyledIcon />
-				{isRegister ? <Register /> : <LogIn />}
+				{isRegister ? <Register showError={setAlertState} /> : <LogIn showError={setAlertState} />}
 				<Typography variant={"subtitle1"} css={css({
 					textAlign: 'center',
 					color: theme.palette.text.disabled
@@ -34,6 +54,7 @@ export const AuthPage = () => {
 					})}
 					to={isRegister ? "/auth/login" : "/auth/register"}
 				>{isRegister ? "Log in" : "Register"}</Link>
+				{alertState.show && <StyledAlert severity="error">{alertState.message}</StyledAlert>}
 			</StyledBox>
 		</Wrapper>
 	)

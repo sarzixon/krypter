@@ -4,7 +4,6 @@ import { prisma } from "../../prisma";
 import { User } from "@prisma/client";
 import * as crypto from "crypto";
 import jwt from "jsonwebtoken"
-import { log } from "console";
 
 interface LoginRequest {
     email: string,
@@ -80,9 +79,19 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
         }).json({ uid: user.uid });
 }
 
-export async function Logout(req: Request, res: Response) {
-    console.log('hitted Logout!');
-    res.clearCookie(AuthCookieNames.accessToken).clearCookie(AuthCookieNames.refreshToken).sendStatus(200);
+export function Logout(req: Request, res: Response) {
+    res
+        .clearCookie(AuthCookieNames.accessToken, {
+            httpOnly: true,
+            secure: true,
+            signed: true,
+        })
+        .clearCookie(AuthCookieNames.refreshToken, {
+            httpOnly: true,
+            secure: true,
+            signed: true,
+        })
+        .sendStatus(200).end();
 }
 
 export async function Register(req: Request<RegisterRequest>, res: Response) {
