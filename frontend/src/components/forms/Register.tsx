@@ -1,7 +1,7 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
 /** @jsxImportSource @emotion/react */
-import { StyledButton } from "../../pages/AuthPage/styles";
+import { Button } from "../../components/buttons/Button";
 import { useState } from "react";
 import axios from "axios";
 import { css } from "@emotion/react";
@@ -118,7 +118,7 @@ export const Register = () => {
                 />
                 }
             />
-            <StyledButton type={"submit"}>Register</StyledButton>
+            <Button type={"submit"}>Register</Button>
             {error ?? error}
         </StyledForm>
     );

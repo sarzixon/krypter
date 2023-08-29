@@ -4,12 +4,24 @@ import { prisma } from "../../prisma";
 import { User } from "@prisma/client";
 import * as crypto from "crypto";
 import jwt from "jsonwebtoken"
-
+import { log } from "console";
 
 interface LoginRequest {
     email: string,
     password: string
 }
+
+interface RegisterRequest {
+    email: string,
+    password: string,
+    policy: boolean
+}
+
+enum AuthCookieNames {
+    refreshToken = 'refresh_token',
+    accessToken = 'access_token',
+}
+
 export async function Login(req: Request<LoginRequest>, res: Response) {
     //validate request data
     const { email, password } = req.body;
@@ -55,12 +67,12 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
 
     })
     res.status(200)
-        .cookie("access_token", accessToken, {
+        .cookie(AuthCookieNames.accessToken, accessToken, {
             httpOnly: true,
             maxAge: Number(process.env.JWT_ACCESS_EXIPRES) || 1000 * 60 * 5,
             secure: true,
             signed: true
-        }).cookie("refresh_token", refreshToken, {
+        }).cookie(AuthCookieNames.refreshToken, refreshToken, {
             httpOnly: true,
             maxAge: Number(process.env.JWT_REFRESH_EXIPRES) || 1000 * 60 * 60 * 24 * 7,
             secure: true,
@@ -68,11 +80,11 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
         }).json({ uid: user.uid });
 }
 
-interface RegisterRequest {
-    email: string,
-    password: string,
-    policy: boolean
+export async function Logout(req: Request, res: Response) {
+    console.log('hitted Logout!');
+    res.clearCookie(AuthCookieNames.accessToken).clearCookie(AuthCookieNames.refreshToken).sendStatus(200);
 }
+
 export async function Register(req: Request<RegisterRequest>, res: Response) {
 
     //validate request data

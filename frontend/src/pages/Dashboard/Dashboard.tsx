@@ -1,16 +1,24 @@
 import axios from "axios";
+import { Button } from '../../components/buttons/Button';
+import { useNavigate } from "react-router-dom";
 
 export const Dashboard = () => {
+	const navigate = useNavigate();
 
-	const id = localStorage.getItem('uid');
+	function handleLogout() {
+		axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`).then(() => {
+			navigate('/auth/login')
 
-	if (id != null) {
-		//get user Assets
-		const assets = axios.get(`${import.meta.env.VITE_API_URL}/user/${id}/assets`);
+		}).catch((err) => {
+			console.log("Error while Logging out");
+		});
+
 	}
 
-
 	return (
-		<>Logged in!</>
+		<>
+			<h1>Hello</h1>
+			<Button onClick={handleLogout}>Log out</Button>
+		</>
 	)
 }

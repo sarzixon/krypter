@@ -1,10 +1,11 @@
-import {createTheme, responsiveFontSizes } from "@mui/material";
-import {blueGrey, grey, indigo, teal} from "@mui/material/colors";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+import { blueGrey, grey, indigo, teal } from "@mui/material/colors";
+
 
 export const theme = responsiveFontSizes(createTheme({
     palette: {
         primary: {
-            main : indigo.A700
+            main: indigo.A700
         },
         secondary: {
             main: teal.A700

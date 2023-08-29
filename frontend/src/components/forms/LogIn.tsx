@@ -1,7 +1,7 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Box, TextField } from "@mui/material";
 /** @jsxImportSource @emotion/react */
-import { StyledButton } from "../../pages/AuthPage/styles";
+import { Button } from "../../components/buttons/Button";
 import axios from "axios";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
@@ -80,7 +80,7 @@ export const LogIn = () => {
                 />
                 }
             />
-            <StyledButton type={"submit"}>Log in</StyledButton>
+            <Button type={"submit"}>Log in</Button>
         </StyledForm>
     );
 };
