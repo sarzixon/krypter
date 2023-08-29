@@ -1,12 +1,12 @@
-import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import {Box, Checkbox, FormControlLabel, TextField} from "@mui/material";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
 /** @jsxImportSource @emotion/react */
-import {StyledButton} from "../../pages/AuthPage/styles";
-import React, {useState} from "react";
+import { StyledButton } from "../../pages/AuthPage/styles";
+import { useState } from "react";
 import axios from "axios";
-import {css} from "@emotion/react";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const StyledForm = styled(Box)`
@@ -30,12 +30,14 @@ export const Register = () => {
         handleSubmit,
         getValues,
         formState: { errors },
-    } = useForm<RegisterInputs>( {defaultValues: {
+    } = useForm<RegisterInputs>({
+        defaultValues: {
             email: '',
             password: '',
             confirmPassword: '',
             policy: false
-        }});
+        }
+    });
     const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
         try {
             const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/register', {
@@ -44,10 +46,8 @@ export const Register = () => {
                 policy: data.policy
             });
 
-            //after successful registration save jwt token and redirect to dashboard
+            navigate('/dashboard');
 
-            // navigate('/dashboard');
-            
 
         } catch (e) {
             setError(e.response.data.message)
@@ -63,12 +63,12 @@ export const Register = () => {
                     required: true,
                     pattern: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/i
                 }}
-                render={({field}) => <TextField
+                render={({ field }) => <TextField
                     error={errors.email && true}
                     variant="standard"
                     type="email"
                     label="email"
-                    css={css({marginBottom: "1rem"})}
+                    css={css({ marginBottom: "1rem" })}
                     {...field}
                 />
                 }
@@ -76,13 +76,13 @@ export const Register = () => {
             <Controller
                 name="password"
                 control={control}
-                rules={{required: true, minLength: 8}}
-                render={({field}) => <TextField
+                rules={{ required: true, minLength: 8 }}
+                render={({ field }) => <TextField
                     error={errors.password && true}
                     variant="standard"
                     type="password"
                     label="password"
-                    css={css({marginBottom: "1rem"})}
+                    css={css({ marginBottom: "1rem" })}
                     {...field}
                 />
                 }
@@ -95,12 +95,12 @@ export const Register = () => {
                     minLength: 8,
                     validate: value => getValues('password') === value
                 }}
-                render={({field}) => <TextField
+                render={({ field }) => <TextField
                     error={errors.confirmPassword && true}
                     variant="standard"
                     type="password"
                     label="confirm password"
-                    css={css({marginBottom: "1rem"})}
+                    css={css({ marginBottom: "1rem" })}
                     {...field}
                 />
                 }
@@ -108,18 +108,18 @@ export const Register = () => {
             <Controller
                 name="policy"
                 control={control}
-                rules={{required: true}}
-                render={({field}) => <FormControlLabel
+                rules={{ required: true }}
+                render={({ field }) => <FormControlLabel
                     required
                     control={<Checkbox
                         {...field}
                     />}
                     label="I accept the privacy policy"
-                    />
+                />
                 }
             />
             <StyledButton type={"submit"}>Register</StyledButton>
-            {error ?? error }
+            {error ?? error}
         </StyledForm>
     );
 };

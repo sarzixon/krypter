@@ -1,12 +1,11 @@
-import {Controller, SubmitHandler, useForm} from "react-hook-form";
-import {Box, TextField} from "@mui/material";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Box, TextField } from "@mui/material";
 /** @jsxImportSource @emotion/react */
-import {StyledButton} from "../../pages/AuthPage/styles";
-import React from "react";
+import { StyledButton } from "../../pages/AuthPage/styles";
 import axios from "axios";
-import {css} from "@emotion/react";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StyledForm = styled(Box)`
   display: flex;
@@ -24,10 +23,12 @@ export const LogIn = () => {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<LogInInputs>( {defaultValues: {
+    } = useForm<LogInInputs>({
+        defaultValues: {
             email: '',
             password: ''
-        }})
+        }
+    })
     const onSubmit: SubmitHandler<LogInInputs> = async (data) => {
         try {
             const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/login', {
@@ -38,8 +39,8 @@ export const LogIn = () => {
 
             });
 
-            localStorage.setItem('uid', res.data.uid )
-            // navigate('/dashboard')
+            localStorage.setItem('uid', res.data.uid)
+            navigate('/dashboard')
 
         } catch (e) {
             console.log(e)
@@ -55,12 +56,12 @@ export const LogIn = () => {
                     required: true,
                     pattern: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/i
                 }}
-                render={({field}) => <TextField
+                render={({ field }) => <TextField
                     error={errors.email && true}
                     variant="standard"
                     type="email"
                     label="email"
-                    css={css({marginBottom: "1rem"})}
+                    css={css({ marginBottom: "1rem" })}
                     {...field}
                 />
                 }
@@ -68,13 +69,13 @@ export const LogIn = () => {
             <Controller
                 name="password"
                 control={control}
-                rules={{required: true}}
-                render={({field}) => <TextField
+                rules={{ required: true }}
+                render={({ field }) => <TextField
                     error={errors.password && true}
                     variant="standard"
                     type="password"
                     label="password"
-                    css={css({marginBottom: "1rem"})}
+                    css={css({ marginBottom: "1rem" })}
                     {...field}
                 />
                 }

@@ -1,0 +1,14 @@
+{
+    "folder-path-color.folders": [
+        {
+            "path": "frontend",
+            "symbol": "FR",
+            "tooltip": "Frontend"
+        },
+        {
+            "path": "backend",
+            "symbol": "BE",
+            "tooltip": "Backend"
+        }
+    ]
+}
