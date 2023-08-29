@@ -1,0 +1,46 @@
+version: "3.8"
+networks:
+  appnet:
+services:
+  backend:
+    image: backend-dev-i
+    build:
+      dockerfile: Dockerfile.dev
+    container_name: backend-dev-i
+    networks:
+      - appnet
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend:/backend
+      - node_modules_backend:/backend/node_modules
+    depends_on:
+      - postgres
+  frontend:
+    image: client-dev-i
+    build:
+      dockerfile: Dockerfile.dev
+    container_name: frontend-dev-d
+    volumes:
+      - ./frontend:/frontend
+      - node_modules:/frontend/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: crypto_trading
+    networks:
+      - appnet
+    ports:
+      - "5432:5432" # Adjust the port if needed
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
+  node_modules:
+  node_modules_backend:

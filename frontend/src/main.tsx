@@ -6,38 +6,36 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import {theme} from "./themes/PrimaryTheme";
-import {ThemeProvider} from "@mui/material";
-import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
-import {AuthPage} from "./pages/AuthPage/AuthPage";
-import {Dashboard} from "./pages/Dashboard/Dashboard";
-import {DevSupport} from "@react-buddy/ide-toolbox";
-import {ComponentPreviews, useInitial} from "./dev";
-
-console.log(theme)
+import { theme } from "./themes/PrimaryTheme";
+import { ThemeProvider } from "@mui/material";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { AuthPage } from "./pages/AuthPage/AuthPage";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { DevSupport } from "@react-buddy/ide-toolbox";
+import { ComponentPreviews, useInitial } from "./dev";
 
 
 const router = createBrowserRouter(createRoutesFromElements(
     <>
         <Route
-            element={<div>Hello Word</div>}
+            element={<div>Hello worksWord</div>}
             path="/"
         />
         <Route
-            element={<AuthPage/>}
+            element={<AuthPage />}
             path="/auth"
         >
             <Route
-                element={<AuthPage/>}
+                element={<AuthPage />}
                 path="login"
             />
             <Route
-                element={<AuthPage/>}
+                element={<AuthPage />}
                 path="register"
             />
         </Route>
         <Route
-            element={<Dashboard/>}
+            element={<Dashboard />}
             path="/dashboard"
         >
 
@@ -50,9 +48,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <DevSupport ComponentPreviews={ComponentPreviews}
-                        useInitialHook={useInitial}
+                useInitialHook={useInitial}
             >
-                <RouterProvider router={router}/>
+                <RouterProvider router={router} />
             </DevSupport>
         </ThemeProvider>
     </React.StrictMode>,
