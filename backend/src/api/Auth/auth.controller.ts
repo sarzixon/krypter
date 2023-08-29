@@ -1,7 +1,7 @@
-import {Request, Response} from "express";
-import {PasswordConf} from "../../interfaces/Common";
-import {prisma} from "../../prisma";
-import {User} from "@prisma/client";
+import { Request, Response } from "express";
+import { PasswordConf } from "../../interfaces/Common";
+import { prisma } from "../../prisma";
+import { User } from "@prisma/client";
 import * as crypto from "crypto";
 import jwt from "jsonwebtoken"
 
@@ -22,19 +22,19 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
     });
 
     if (!user) {
-        res.status(400).json({message: 'Could not find user with mail: ' + email});
+        res.status(400).json({ message: 'Could not find user with mail: ' + email });
         return;
     }
 
     const hashedInput = crypto.pbkdf2Sync(password, user.salt, 1000, 64, 'sha512').toString('hex');
 
     if (hashedInput !== user.password) {
-        res.status(400).json({message: 'Invalid password'});
+        res.status(400).json({ message: 'Invalid password' });
         return;
     }
 
     //create jsonwebtoken
-    const accessToken = jwt.sign({ id: user.uid, email }, process.env.JWT_SECRET || 'access_secret', {expiresIn: process.env.JWT_ACCESS_EXIPRES});
+    const accessToken = jwt.sign({ id: user.uid, email }, process.env.JWT_SECRET || 'access_secret', { expiresIn: process.env.JWT_ACCESS_EXIPRES });
     const refreshToken = crypto.randomUUID().toString();
 
     await prisma.refreshToken.upsert({
@@ -42,32 +42,30 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
             userId: user.uid
         },
         create: {
-                userId: user.uid,
-                hash: refreshToken,
-                created_at: new Date(),
-                expires_at: new Date(Date.now() + Number(process.env.JWT_REFRESH_EXIPRES) )
-            },
+            userId: user.uid,
+            hash: refreshToken,
+            created_at: new Date(),
+            expires_at: new Date(Date.now() + Number(process.env.JWT_REFRESH_EXIPRES))
+        },
         update: {
-                hash: refreshToken,
-                created_at: new Date(),
-                expires_at: new Date(Date.now() + Number(process.env.JWT_REFRESH_EXIPRES) )
+            hash: refreshToken,
+            created_at: new Date(),
+            expires_at: new Date(Date.now() + Number(process.env.JWT_REFRESH_EXIPRES))
         }
 
     })
-
     res.status(200)
-        .cookie("accessToken", accessToken, {
-        maxAge: Number(process.env.JWT_ACCESS_EXIPRES) || 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        secure: true,
-        // signed: true,
-        sameSite: "none"
-    })/*.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        maxAge: Number(process.env.JWT_REFRESH_EXIPRES) || 1000 * 60 * 60 * 24 * 7,
-        secure: true,
-        signed: true
-    })*/.json({uid: user.uid});
+        .cookie("access_token", accessToken, {
+            httpOnly: true,
+            maxAge: Number(process.env.JWT_ACCESS_EXIPRES) || 1000 * 60 * 5,
+            secure: true,
+            signed: true
+        }).cookie("refresh_token", refreshToken, {
+            httpOnly: true,
+            maxAge: Number(process.env.JWT_REFRESH_EXIPRES) || 1000 * 60 * 60 * 24 * 7,
+            secure: true,
+            signed: true
+        }).json({ uid: user.uid });
 }
 
 interface RegisterRequest {
@@ -84,9 +82,11 @@ export async function Register(req: Request<RegisterRequest>, res: Response) {
     ) {
         const { email, password, policy } = req.body;
 
-        const exists = await prisma.user.findUnique({where: {
-            email: email
-            }})
+        const exists = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
 
         if (exists == null) {
 
@@ -104,21 +104,21 @@ export async function Register(req: Request<RegisterRequest>, res: Response) {
                     }
                 });
 
-                res.status(201).json({message: "success"});
+                res.status(201).json({ message: "success" });
                 return;
 
             } catch (e) {
                 //@ts-ignore
-                res.status(500).json({message: "error while creating new user. Please try again later."});
+                res.status(500).json({ message: "error while creating new user. Please try again later." });
                 return;
             }
 
         }
 
-        res.status(400).json({message: "User already exists. Please Log in."});
+        res.status(400).json({ message: "User already exists. Please Log in." });
         return;
 
     }
 
-    res.status(400).json({message: "invalid request data"});
+    res.status(400).json({ message: "invalid request data" });
 }
