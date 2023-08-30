@@ -45,7 +45,7 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
     }
 
     //create jsonwebtoken
-    const accessToken = jwt.sign({ id: user.uid, email }, process.env.JWT_SECRET || 'access_secret', { expiresIn: process.env.JWT_ACCESS_EXIPRES });
+    const accessToken = jwt.sign({ id: user.uid, email, role: user.role }, process.env.JWT_SECRET || 'access_secret', { expiresIn: process.env.JWT_ACCESS_EXIPRES });
     const refreshToken = crypto.randomUUID().toString();
 
     await prisma.refreshToken.upsert({
@@ -63,8 +63,17 @@ export async function Login(req: Request<LoginRequest>, res: Response) {
             created_at: new Date(),
             expires_at: new Date(Date.now() + Number(process.env.JWT_REFRESH_EXIPRES))
         }
+    });
 
+    await prisma.user.update({
+        where: {
+            uid: user.uid
+        },
+        data: {
+            last_login: new Date()
+        }
     })
+
     res.status(200)
         .cookie(AuthCookieNames.accessToken, accessToken, {
             httpOnly: true,
@@ -119,6 +128,8 @@ export async function Register(req: Request<RegisterRequest>, res: Response) {
                     data: {
                         email,
                         password: hash,
+                        active: true,
+                        role: 'BASIC',
                         salt,
                         policy,
                         created_at: new Date(),

@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
@@ -12,39 +12,44 @@ datasource db {
 }
 
 model User {
-  uid    Int     @id @default(autoincrement())
-  email String  @unique
-  password String
-  salt String
-  policy Boolean
-  created_at DateTime
-  last_login DateTime?
+  uid           Int           @id @default(autoincrement())
+  email         String        @unique
+  password      String
+  role          UserRole
+  active        Boolean
+  salt          String
+  policy        Boolean
+  created_at    DateTime
+  last_login    DateTime?
   refresh_token RefreshToken?
-  asset Asset[]
+  asset         Asset[]
 }
 
 model RefreshToken {
-    id Int @id @default(autoincrement())
-    userId Int @unique
-    User User @relation(fields:[userId], references:[uid])
-    hash String
-    created_at DateTime
-    expires_at DateTime
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  User       User     @relation(fields: [userId], references: [uid])
+  hash       String
+  created_at DateTime
+  expires_at DateTime
 }
 
 model Asset {
-  id Int @id @default(autoincrement())
-  ownerId Int
-  User User @relation(fields:[ownerId], references: [uid])
-  name String @unique
+  id       Int       @id @default(autoincrement())
+  ownerId  Int
+  User     User      @relation(fields: [ownerId], references: [uid])
+  name     String    @unique
   quantity Decimal
-  type AssetType
-  currency String
-  value Decimal
+  type     AssetType
 }
 
 enum AssetType {
   CURRENCY
   STOCK
   CRYPTO
+}
+
+enum UserRole {
+  BASIC
+  ADMIN
 }
