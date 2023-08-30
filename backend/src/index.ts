@@ -1,13 +1,13 @@
 import 'reflect-metadata';
-import express, {Express} from 'express';
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
-import {prisma} from "./prisma";
+import { prisma } from "./prisma";
 
-import {AuthRouter} from "./routers/AuthRouter";
-import {UserRouter} from "./routers/UserRouter";
+import { AuthRouter } from "./routers/AuthRouter";
+import { UserRouter } from "./routers/UserRouter";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -22,12 +22,12 @@ app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET || '03259f2125d922b4724075d7eab22253'));
 app.use(morgan('dev'));
 
-async function main () {
+async function main() {
 
     // Routes
     app.get('/', (req, res) => res.send('basic stuff bro'))
     app.use('/auth', AuthRouter);
-    app.use('/user', UserRouter);
+    app.use('/users', UserRouter);
 
     // Start the server
     app.listen(PORT, () => {

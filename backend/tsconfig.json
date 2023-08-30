@@ -5,10 +5,13 @@
         "outDir": "./dist",
         "rootDir": "./src",
         "strict": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "typeRoots": [
+            "./types"
+        ]
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "prisma"
     ]
 }
-

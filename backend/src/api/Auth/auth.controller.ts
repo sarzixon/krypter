@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PasswordConf } from "../../interfaces/Common";
+import { PasswordConf } from "../../types/Common";
 import { prisma } from "../../prisma";
 import { User } from "@prisma/client";
 import * as crypto from "crypto";
@@ -16,7 +16,7 @@ interface RegisterRequest {
     policy: boolean
 }
 
-enum AuthCookieNames {
+export enum AuthCookieNames {
     refreshToken = 'refresh_token',
     accessToken = 'access_token',
 }
