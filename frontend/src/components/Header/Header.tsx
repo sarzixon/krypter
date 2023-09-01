@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useContext } from "react";
+import { ProfileContext } from "../../contexts/ProfileContext";
 
 const HeaderWrapper = styled(Container)`
     display: flex;
@@ -19,6 +21,7 @@ gap: 1rem;
 
 export function Header() {
     const navigate = useNavigate();
+    const profile = useContext(ProfileContext);
 
     function handleLogout() {
         axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`, null, {
@@ -31,14 +34,16 @@ export function Header() {
         });
     }
 
+    const getAvatarLetter = (str: string) => str.charAt(0).toLocaleUpperCase();
+
     return (
         <AppBar position="sticky" sx={{ padding: '.5rem' }}>
             <HeaderWrapper>
                 <AppLogo />
                 <Box sx={{ display: "flex", gap: '1rem' }}>
                     <HeaderProfile>
-                        <Avatar>M</Avatar>
-                        Hello, Michal
+                        <Avatar>{profile && getAvatarLetter(profile.email)}</Avatar>
+                        {profile && profile.email}
                     </HeaderProfile>
                     <SecondaryButton onClick={handleLogout}>
                         Logout
