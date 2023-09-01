@@ -83,7 +83,7 @@ function addAuthCookiesAndAuthorizedUserToRequest(accessToken: string, refreshTo
         [AuthCookieNames.refreshToken]: refreshToken,
     };
 
-    const authRequest = req as AuthorizedRequest;
+    const authRequest = req as AuthorizedRequest<any>;
 
     authRequest.authorizedUser = user;
 
@@ -123,10 +123,11 @@ export async function AuthGuard(req: Request, res: Response, next: NextFunction)
             sendUnauthorizedResponseAndClearCookie(res);
         }
         user = user as User;
-        const authRequest = req as AuthorizedRequest;
+        const authRequest = req as AuthorizedRequest<any>;
 
         authRequest.authorizedUser = user;
 
+        console.log('redirecting...')
         next();
 
     } catch (error) {

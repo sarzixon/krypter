@@ -11,9 +11,13 @@ export interface TypedResponse<ResBody> extends Express.Response {
     status: Send<Number, this>;
 }
 
-export type AuthorizedRequest = {
+export type AuthorizedRequest<P> = {
     authorizedUser?: User
-} & Request;
+} & Request<P>;
+
+export type UserRequestParams = {
+    userId: string
+};
 
 export enum PasswordConf {
     MIN_LENGTH = 8,

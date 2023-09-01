@@ -1,7 +1,6 @@
-import { log } from "console";
-import { Response, Router } from "express";
+import { Router } from "express";
 import { AuthGuard } from "../guards/AuthGuard";
-import { AuthorizedRequest } from "../types/Common";
+import { GetAuthorizedUser, GetUser, GetUserAssets } from "../api/User/user.controller";
 export const UserRouter = Router();
 
 UserRouter.use(AuthGuard);
@@ -11,19 +10,10 @@ UserRouter.use((req, res, next) => {
     next()
 })
 
+UserRouter.get('/me', GetAuthorizedUser);
 
+UserRouter.get('/:userId', GetUser);
 
-UserRouter.get('/me', async (req: AuthorizedRequest, res: Response) => {
-
-    log(req.authorizedUser)
-
-    const userData = {
-        email: req.authorizedUser?.email,
-        active: req.authorizedUser?.active,
-        role: req.authorizedUser?.role
-    }
-
-    res.json(userData);
-});
+UserRouter.get('/:userId/assets', GetUserAssets);
 
 
