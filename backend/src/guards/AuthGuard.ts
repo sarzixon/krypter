@@ -48,7 +48,8 @@ async function updateUserRefreshToken(user: User, refreshToken: string) {
 }
 
 async function validateRefreshToken(refreshToken: string | undefined): Promise<false | RefreshToken> {
-    let entity = await prisma.refreshToken.findFirst({
+
+    let entity = refreshToken && await prisma.refreshToken.findFirst({
         where: {
             hash: refreshToken
         }
@@ -72,7 +73,7 @@ function sendUnauthorizedResponseAndClearCookie(res: Response) {
         secure: true,
         signed: true,
     })
-        .sendStatus(401)
+        .status(401)
         .json({ message: 'please log in' })
         .end();
 }
@@ -131,9 +132,13 @@ export async function AuthGuard(req: Request, res: Response, next: NextFunction)
         next();
 
     } catch (error) {
+
         let validRefreshToken = await validateRefreshToken(refresh_token);
 
-        if (!validRefreshToken) sendUnauthorizedResponseAndClearCookie(res);
+        if (!validRefreshToken) {
+            sendUnauthorizedResponseAndClearCookie(res);
+            return;
+        }
 
         validRefreshToken = validRefreshToken as RefreshToken;
 
@@ -143,7 +148,10 @@ export async function AuthGuard(req: Request, res: Response, next: NextFunction)
             }
         });
 
-        if (!user) sendUnauthorizedResponseAndClearCookie(res);
+        if (!user) {
+            sendUnauthorizedResponseAndClearCookie(res);
+            return;
+        }
 
         user = user as User;
 
