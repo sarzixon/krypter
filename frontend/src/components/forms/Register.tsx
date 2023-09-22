@@ -1,13 +1,13 @@
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
+import {Control, Controller, SubmitHandler, useForm} from "react-hook-form";
+import { Box, Checkbox, FormControlLabel } from "@mui/material";
 /** @jsxImportSource @emotion/react */
-import { Button } from "../../components/buttons/Button";
+import { Button } from "../buttons/Button";
 import { useEffect } from "react";
 import axios, { AxiosError } from "axios";
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import { ShowErrorProps } from "../../types/types";
+import TextFieldInput from "./TextFieldInput/TextFieldInput";
 
 
 const StyledForm = styled(Box)`
@@ -57,7 +57,7 @@ export const Register = ({ showError }: RegisterProps) => {
     const onSubmit: SubmitHandler<RegisterInputs> = async (data) => {
         try {
 
-            const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/register', {
+            await axios.post(import.meta.env.VITE_API_URL + '/auth/register', {
                 email: data.email,
                 password: data.password,
                 policy: data.policy
@@ -82,55 +82,44 @@ export const Register = ({ showError }: RegisterProps) => {
 
     return (
         <StyledForm component={"form"} onSubmit={handleSubmit(onSubmit)}>
-            <Controller
+            <TextFieldInput
                 name="email"
-                control={control}
+                control={(control as unknown) as Control}
+                type="email"
+                variant="standard"
+                label="email"
                 rules={{
                     required: true,
                     pattern: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/i
                 }}
-                render={({ field }) => <TextField
-                    error={errors.email && true}
-                    variant="standard"
-                    type="email"
-                    label="email"
-                    css={css({ marginBottom: "1rem" })}
-                    {...field}
-                />
-                }
+                error={errors.email && true}
             />
-            <Controller
+            <TextFieldInput
                 name="password"
-                control={control}
-                rules={{ required: true, minLength: 8 }}
-                render={({ field }) => <TextField
-                    error={errors.password && true}
-                    variant="standard"
-                    type="password"
-                    label="password"
-                    css={css({ marginBottom: "1rem" })}
-                    {...field}
-                />
-                }
+                control={(control as unknown) as Control}
+                type="password"
+                variant="standard"
+                label="password"
+                rules={{
+                    required: true,
+                    minLength: 8
+                }}
+                error={errors.email && true}
             />
-            <Controller
+            <TextFieldInput
                 name="confirmPassword"
-                control={control}
+                control={(control as unknown) as Control}
+                type="password"
+                variant="standard"
+                label="password"
                 rules={{
                     required: true,
                     minLength: 8,
                     validate: value => getValues('password') === value
                 }}
-                render={({ field }) => <TextField
-                    error={errors.confirmPassword && true}
-                    variant="standard"
-                    type="password"
-                    label="confirm password"
-                    css={css({ marginBottom: "1rem" })}
-                    {...field}
-                />
-                }
+                error={errors.email && true}
             />
+
             <Controller
                 name="policy"
                 control={control}

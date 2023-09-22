@@ -2,9 +2,10 @@ import { Box } from "@mui/material";
 import styled from "@emotion/styled";
 import { Header } from "../../components/Header/Header";
 import { SideNavigation } from "../../components/navigation/SideNavigation";
-import { ProfileContextProvider } from "../../contexts/ProfileContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ProfileContextProvider } from "../../contexts/ProfileContext";
+
 
 const ContentWrapper = styled(Box)`
 height: 100vh;
@@ -31,7 +32,6 @@ export const Dashboard = () => {
 		async function fetchAssets() {
 			try {
 				const { data } = await axios.get<Asset[]>(import.meta.env.VITE_API_URL + '/users/7/assets');
-				console.log(data);
 
 				setAssets(data);
 			} catch (error) {
@@ -66,6 +66,5 @@ export const Dashboard = () => {
 				</MainWrapper>
 			</ContentWrapper>
 		</ProfileContextProvider>
-
 	)
 }

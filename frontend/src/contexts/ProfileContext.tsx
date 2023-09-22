@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { Profile } from "../types/types";
 import axios from "axios";
 
@@ -30,3 +30,8 @@ export function ProfileContextProvider({ children }: ContextProviderProps) {
 
 }
 
+export function useProfileContext() {
+    const context = useContext(ProfileContext);
+
+    return context;
+}

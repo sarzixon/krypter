@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import {styled} from "@mui/material/styles";
 /** @jsxImportSource @emotion/react */
-import styled from "@emotion/styled";
 
 export const Wrapper = styled(Container)`
       height: 100vh;

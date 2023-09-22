@@ -4,8 +4,7 @@ import styled from "@emotion/styled";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useContext } from "react";
-import { ProfileContext } from "../../contexts/ProfileContext";
+import { useProfileContext } from "../../contexts/ProfileContext";
 
 const HeaderWrapper = styled(Container)`
     display: flex;
@@ -21,7 +20,7 @@ gap: 1rem;
 
 export function Header() {
     const navigate = useNavigate();
-    const profile = useContext(ProfileContext);
+    const profile = useProfileContext();
 
     function handleLogout() {
         axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`, null, {
@@ -29,7 +28,7 @@ export function Header() {
         }).then(() => {
             navigate('/auth/login')
 
-        }).catch((err) => {
+        }).catch(() => {
             console.log("Error while Logging out");
         });
     }

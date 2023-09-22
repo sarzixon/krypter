@@ -5,10 +5,10 @@ import { blueGrey, grey, indigo, teal } from "@mui/material/colors";
 export const theme = responsiveFontSizes(createTheme({
     palette: {
         primary: {
-            main: indigo.A700
+            main: indigo["700"]
         },
         secondary: {
-            main: teal.A700
+            main: teal["700"]
         },
         background: {
             default: blueGrey["50"]

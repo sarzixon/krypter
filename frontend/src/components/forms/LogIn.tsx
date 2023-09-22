@@ -1,12 +1,12 @@
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Box, TextField } from "@mui/material";
-import { Button } from "../../components/buttons/Button";
+import { SubmitHandler, useForm, Control } from "react-hook-form";
+import { Box } from "@mui/material";
+import { Button } from "../buttons/Button";
 import axios, { AxiosError } from "axios";
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { styled } from '@mui/material/styles'
 import { useNavigate } from "react-router-dom";
 import { ShowErrorProps } from "../../types/types";
 import { useEffect } from "react";
+import TextFieldInput from "./TextFieldInput/TextFieldInput";
 
 const StyledForm = styled(Box)`
   display: flex;
@@ -48,7 +48,7 @@ export const LogIn = ({ showError }: LogInProps) => {
 
     const onSubmit: SubmitHandler<LogInInputs> = async (data) => {
         try {
-            const res = await axios.post(import.meta.env.VITE_API_URL + '/auth/login', {
+            await axios.post(import.meta.env.VITE_API_URL + '/auth/login', {
                 email: data.email,
                 password: data.password
             }, {
@@ -75,37 +75,30 @@ export const LogIn = ({ showError }: LogInProps) => {
 
     return (
         <StyledForm component={"form"} onSubmit={handleSubmit(onSubmit)}>
-            <Controller
+            <TextFieldInput
                 name="email"
-                control={control}
+                control={(control as unknown) as Control}
+                type="email"
+                variant="standard"
+                label="email"
                 rules={{
                     required: true,
                     pattern: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/i
-                }}
-                render={({ field }) => <TextField
-                    error={errors.email && true}
-                    variant="standard"
-                    type="email"
-                    label="email"
-                    css={css({ marginBottom: "1rem" })}
-                    {...field}
-                />
-                }
+            }}
+                error={errors.email && true}
             />
-            <Controller
+            <TextFieldInput
                 name="password"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <TextField
-                    error={errors.password && true}
-                    variant="standard"
-                    type="password"
-                    label="password"
-                    css={css({ marginBottom: "1rem" })}
-                    {...field}
-                />
-                }
+                control={(control as unknown) as Control}
+                type="password"
+                variant="standard"
+                label="password"
+                rules={{
+                    required: true,
+                }}
+                error={errors.password && true}
             />
+
             <Button disabled={isSubmitting} type={"submit"}>Log in</Button>
         </StyledForm>
     );
