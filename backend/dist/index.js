@@ -15,24 +15,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
-// @ts-ignore
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
+const prisma_1 = require("./prisma");
+const AuthRouter_1 = require("./routers/AuthRouter");
+const UserRouter_1 = require("./routers/UserRouter");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 // Middleware
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    credentials: true,
+    origin: true,
+    exposedHeaders: ["set-cookie"]
+}));
 app.use(body_parser_1.default.json());
+app.use((0, cookie_parser_1.default)(process.env.COOKIE_SECRET || '03259f2125d922b4724075d7eab22253'));
 app.use((0, morgan_1.default)('dev'));
-// Database Connection
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         // Routes
-        app.get('/', (req, res) => {
-            res.send('Welcome to the Crypto Trading Platform API!');
-        });
+        app.get('/', (req, res) => res.send('basic stuff bro'));
+        app.use('/auth', AuthRouter_1.AuthRouter);
+        app.use('/users', UserRouter_1.UserRouter);
         // Start the server
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
@@ -41,10 +46,10 @@ function main() {
 }
 main()
     .then(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma.$disconnect();
+    yield prisma_1.prisma.$disconnect();
 }))
     .catch((e) => __awaiter(void 0, void 0, void 0, function* () {
     console.error(e);
-    yield prisma.$disconnect();
+    yield prisma_1.prisma.$disconnect();
     process.exit(1);
 }));
