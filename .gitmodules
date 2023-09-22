@@ -1,0 +1,6 @@
+[submodule "krypter-client"]
+	path = krypter-client
+	url = https://github.com/sarzixon/krypter-client.git
+[submodule "krypter-api"]
+	path = krypter-api
+	url = https://github.com/sarzixon/krypter-api.git
