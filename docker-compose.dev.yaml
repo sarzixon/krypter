@@ -12,7 +12,7 @@ services:
     ports:
       - '8000:8000'
     volumes:
-      - ./backend:/backend
+      - ./krypter-api:/backend
       - node_modules_backend:/backend/node_modules
     depends_on:
       - postgres
@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: frontend-dev-d
     volumes:
-      - ./frontend:/frontend
+      - ./krypter-client:/frontend
       - node_modules:/frontend/node_modules
     ports:
       - "3000:3000"
