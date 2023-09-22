@@ -4,6 +4,7 @@
 .gitignore
 config
 build
+dist
 **/node_modules/
 docker-compose.dev.yaml
 docker-compose.prod.yaml
